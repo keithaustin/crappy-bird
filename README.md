@@ -1,18 +1,14 @@
-# game-test
+# crappy-bird
 
-TODO: Write a description here
-
-## Installation
-
-TODO: Write installation instructions here
+A small, lightweight Flappy Bird clone written in Crystal/CrSFML using ECS
+architecture. 
 
 ## Usage
 
-TODO: Write usage instructions here
-
-## Development
-
-TODO: Write development instructions here
+Clone the repository, and run ./crappy_bird, or build from source with
+```bash
+crystal build src/crappy_bird.cr
+```
 
 ## Contributing
 
@@ -24,4 +20,4 @@ TODO: Write development instructions here
 
 ## Contributors
 
-- [your-name-here](https://github.com/your-github-user) - creator and maintainer
+- [Keith Austin](https://github.com/keithaustin) - creator and maintainer
