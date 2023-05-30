@@ -17,7 +17,18 @@ module Resources
         SF::Font.from_file("resources/font.ttf")
     end
 
-    def self.gameover_color
+    def self.black_background_color
         SF::Color.new(0, 0, 0, 100)
+    end
+
+    def self.text
+      text = SF::Text.new
+      text.font = self.font
+      text.color = SF::Color::White
+      text.outline_color = SF::Color::Black
+      text.outline_thickness = 2
+      text.style = SF::Text::Bold
+
+      text
     end
 end

@@ -106,34 +106,28 @@ module Systems
       window.draw(score_text)
     end
 
-    def self.draw_gameover_ui(window)
+    def self.draw_black_background(window)
       background = SF::RectangleShape.new
       background.position = {0.0, 0.0}
       background.size = window.size
-      background.fill_color = Resources.gameover_color
+      background.fill_color = Resources.black_background_color
 
       window.draw background
+    end
 
-      gameover_text = SF::Text.new
-      gameover_text.font = Resources.font
+    def self.draw_gameover_ui(window)
+      self.draw_black_background window
+
+      gameover_text = Resources.text
       gameover_text.character_size = 48
-      gameover_text.color = SF::Color::White
-      gameover_text.outline_color = SF::Color::Black
-      gameover_text.outline_thickness = 2
-      gameover_text.style = SF::Text::Bold
       gameover_text.position = {72.0, 24.0}
 
       gameover_text.string = "You Lose"
 
       window.draw gameover_text
 
-      score_text = SF::Text.new
-      score_text.font = Resources.font
+      score_text = Resources.text
       score_text.character_size = 26
-      score_text.color = SF::Color::White
-      score_text.outline_color = SF::Color::Black
-      score_text.outline_thickness = 2
-      score_text.style = SF::Text::Bold
       score_text.position = {148.0, 128.0}
 
       score_text.string = "Score: #{Game.score}"
@@ -142,33 +136,18 @@ module Systems
     end
 
     def self.draw_title_ui(window)
-      background = SF::RectangleShape.new
-      background.position = {0.0, 0.0}
-      background.size = window.size
-      background.fill_color = Resources.gameover_color
+      self.draw_black_background window
 
-      window.draw background
-
-      title_text = SF::Text.new
-      title_text.font = Resources.font
+      title_text = Resources.text
       title_text.character_size = 48
-      title_text.color = SF::Color::White
-      title_text.outline_color = SF::Color::Black
-      title_text.outline_thickness = 2
-      title_text.style = SF::Text::Bold
       title_text.position = {22.0, 24.0}
 
       title_text.string = "Crappy Bird"
 
       window.draw title_text
 
-      instruction_text = SF::Text.new
-      instruction_text.font = Resources.font
+      instruction_text = Resources.text
       instruction_text.character_size = 18
-      instruction_text.color = SF::Color::White
-      instruction_text.outline_color = SF::Color::Black
-      instruction_text.outline_thickness = 2
-      instruction_text.style = SF::Text::Bold
       instruction_text.position = {64.0, 128.0}
 
       instruction_text.string = "Press any key to start"
