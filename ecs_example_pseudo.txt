@@ -1,0 +1,42 @@
+//defined somewhere else
+//struct CollisionShape;
+//struct ParticleType;
+
+struct Spider {
+    //for example
+    EntityId head;
+    EntityId body;
+    EntityId[8] legs;
+}
+
+void resolveCollisions(ECS ecs) {
+    for(EntityId entity in ecs.getEntitiesWithComponent("CollisionShape")) {
+        //resolve collisions...
+    }
+}
+
+void emitParticles(ECS ecs) {
+    for(EntityId entity in ecs.getEntitiesWithComponent("ParticleType")) {
+        //emit those particles...
+    }
+}
+
+EntityId createSpider(ECS ecs) {
+    EntityId head = ecs.insert(new CollisionShape("Spider Head"));
+    EntityId body = ecs.insert(new CollisionShape("Spider Body"));
+    EntityId[8] legs;
+    for(int i = 0; i < 8; i++) {
+        legs[i] = ecs.insert(new CollisionShape("Spider Leg"), new ParticleType("Spider Leg Particle"));
+    }
+    EntityId spider = ecs.insert(new Spider(head, body, legs));
+    return spider;
+}
+
+void spiderSpecificFunction(ECS ecs) {
+    for(EntityId spider_id in ecs.getEntitiesWithComponent("Spider")) {
+        Spider spider = ecs.getComponent(spider_id, "Spider");
+        for(EntityId leg_id in spider.legs) {
+            //you get the point
+        }
+    }
+}

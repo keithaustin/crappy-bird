@@ -1,4 +1,5 @@
 require "crsfml"
+require "crsfml/audio"
 
 module Resources
     def self.bird_texture
@@ -19,6 +20,22 @@ module Resources
 
     def self.black_background_color
         SF::Color.new(0, 0, 0, 100)
+    end
+
+    def self.music
+        SF::Music.from_file("resources/crappy_bird.ogg")
+    end
+
+    def self.jump_sound
+        SF::SoundBuffer.from_file("resources/jump.wav")
+    end
+
+    def self.death_sound
+        SF::SoundBuffer.from_file("resources/hitHurt.wav")
+    end
+
+    def self.start_sound
+        SF::SoundBuffer.from_file("resources/start.wav")
     end
 
     def self.text

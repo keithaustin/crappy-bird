@@ -30,9 +30,9 @@ while window.open?
     end
   end
   
+  delta_time = clock.restart.as_seconds
+  Game.tick(delta_time)
   Spawner.update(Game.world)
-  
-  Physics.update(Game.world, clock)
-
+  Physics.update(Game.world, delta_time)
   Render.draw(window, Game.world)
 end

@@ -1,4 +1,5 @@
 require "crsfml"
+require "crsfml/audio"
 require "./ecs"
 require "./components"
 require "./assemblies"
@@ -10,6 +11,9 @@ module Systems
     ENV = "prod"
 
     JUMP_VELOCITY = -440.0
+    JUMP_COOLDOWN_SECS = 0.2
+
+    @@jump_cooldown = 0.0
 
     @@state = :title
     @@world = World.new
@@ -30,6 +34,7 @@ module Systems
     end
 
     def self.gameover
+      Sound.stop_music
       @@state = :gameover
     end
 
@@ -47,11 +52,24 @@ module Systems
 
     def self.start_game
       self.setup_game
+      Sound.start_music
       @@state = :in_game
     end
 
     def self.pause_game
       @@state = :paused
+    end
+
+    def self.tick(delta_time)
+      @@jump_cooldown = Math.max(@@jump_cooldown - (1.0 * delta_time), 0.0)
+    end
+
+    def self.jump_cooldown?
+      @@jump_cooldown > 0
+    end
+
+    def self.set_jump_cooldown
+      @@jump_cooldown = JUMP_COOLDOWN_SECS
     end
   end
 
@@ -71,7 +89,7 @@ module Systems
 
       case Game.state
       when :in_game
-        self.draw_ui(window)
+        self.draw_score(window)
       when :title
         self.draw_title_ui(window)
       when :gameover
@@ -91,7 +109,7 @@ module Systems
       window.draw hitbox
     end
 
-    def self.draw_ui(window)
+    def self.draw_score(window)
       score_text = SF::Text.new
       score_text.font = Resources.font
       score_text.character_size = 26
@@ -156,11 +174,30 @@ module Systems
     end
   end
 
+  module Sound
+    @@music = Resources.music
+    def self.play_sound(buffer)
+      sound = SF::Sound.new(buffer)
+      sound.volume = 60
+      sound.play
+    end
+
+    def self.start_music
+      @@music.volume = 50
+      @@music.loop = true
+      @@music.play
+    end
+
+    def self.stop_music
+      @@music.pause
+    end
+  end
+
   module Physics
     SCORE_SPEED_MULT = 0.5
 
-    def self.update(world : World, clock : SF::Clock)
-      elapsed_time = clock.restart.as_seconds
+    def self.update(world : World, delta_time)
+      elapsed_time = delta_time
       unless Game.state == :in_game
         return
       end
@@ -181,6 +218,7 @@ module Systems
             .intersects?(entity.get(Sprite).sprite.global_bounds)
 
           if collision_rect || entity.get(Sprite).sprite.position.y > 680
+            Sound.play_sound(Resources.death_sound)
             Game.gameover
           end
         end
@@ -197,6 +235,7 @@ module Systems
       world.entities_with(Set{ScoreTrigger, Speed}).each do |entity|
         entity.get(ScoreTrigger).x += entity.get(Speed).speed * elapsed_time
         entity.get(Speed).speed += (Game.score * -SCORE_SPEED_MULT) * elapsed_time
+        
         if player.nil?
           return
         end
@@ -218,14 +257,20 @@ module Systems
       else
         case Game.state
         when :in_game
+          return if Game.jump_cooldown?
           world.entities_with(Set{PlayerController, Speed}).each do |entity|
             entity.get(Speed).speed = Game::JUMP_VELOCITY
+            Sound.play_sound(Resources.jump_sound)
           end
+
+          Game.set_jump_cooldown
         when :title
           Game.start_game
+          Sound.play_sound(Resources.start_sound)
           return
         when :gameover
           Game.start_game
+          Sound.play_sound(Resources.start_sound)
           return
         end
       end
